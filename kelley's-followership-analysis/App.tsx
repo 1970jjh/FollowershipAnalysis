@@ -1,4 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { ALL_QUESTIONS, FOLLOWERSHIP_TYPES } from './constants';
 import { UserInfo, FollowershipType, AnalysisResult } from './types';
 import { analyzeFollowershipWithGemini } from './services/geminiService';
@@ -21,8 +23,9 @@ const App: React.FC = () => {
   const [answers, setAnswers] = useState<number[]>(new Array(20).fill(0));
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>('');
-  
-  const topRef = useRef<HTMLDivElement>(null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+
+  const resultRef = useRef<HTMLDivElement>(null);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -107,8 +110,80 @@ const App: React.FC = () => {
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleSavePDF = async () => {
+    if (!resultRef.current || !result) return;
+
+    setIsSaving(true);
+
+    try {
+      // 스크롤을 맨 위로 이동
+      window.scrollTo(0, 0);
+
+      // 잠시 대기하여 렌더링 완료
+      await new Promise(resolve => setTimeout(resolve, 300));
+
+      const element = resultRef.current;
+
+      // html2canvas로 캡처
+      const canvas = await html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        windowWidth: element.scrollWidth,
+        windowHeight: element.scrollHeight,
+      });
+
+      const imgData = canvas.toDataURL('image/png');
+
+      // A4 사이즈로 PDF 생성
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      // 이미지 비율 유지하면서 PDF에 맞게 조정
+      const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+      const imgX = (pdfWidth - imgWidth * ratio) / 2;
+      const imgY = 10;
+
+      // 여러 페이지로 나누기
+      const pageHeight = pdfHeight - 20; // 상하 여백
+      const scaledImgHeight = imgHeight * ratio;
+      let heightLeft = scaledImgHeight;
+      let position = 0;
+
+      // 첫 페이지
+      pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, scaledImgHeight);
+      heightLeft -= pageHeight;
+
+      // 추가 페이지가 필요한 경우
+      while (heightLeft > 0) {
+        position -= pageHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', imgX, position + imgY, imgWidth * ratio, scaledImgHeight);
+        heightLeft -= pageHeight;
+      }
+
+      // 파일명 생성
+      const fileName = `팔로워십_진단결과_${userInfo.name}_${new Date().toLocaleDateString('ko-KR').replace(/\./g, '')}.pdf`;
+
+      // PDF 저장 (모바일에서 자동 다운로드)
+      pdf.save(fileName);
+
+    } catch (error) {
+      console.error('PDF 저장 오류:', error);
+      alert('PDF 저장 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Progress calculation
@@ -116,7 +191,7 @@ const App: React.FC = () => {
   const progress = (answeredCount / 20) * 100;
 
   return (
-    <div className="min-h-screen pb-10 font-sans text-gray-900 bg-[#f0f0f0] print:bg-white" ref={topRef}>
+    <div className="min-h-screen pb-10 font-sans text-gray-900 bg-[#f0f0f0] print:bg-white">
       {/* Header - Glassmorphism (hidden in print) */}
       <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b-4 border-black px-4 py-3 flex justify-between items-center shadow-sm no-print print:hidden">
         <h1 className="text-xl font-display font-black tracking-tight text-brutal-blue">
@@ -259,10 +334,10 @@ const App: React.FC = () => {
         )}
 
         {step === Step.RESULT && result && (
-          <div className="space-y-8 animate-fade-in-up print:space-y-6">
-            
-            {/* User Info Block for Print */}
-            <div className="hidden print:flex flex-row justify-between bg-gray-50 p-4 border-2 border-black rounded mb-4">
+          <div className="space-y-8 animate-fade-in-up print:space-y-6" ref={resultRef}>
+
+            {/* User Info Block for PDF */}
+            <div className="flex flex-row justify-between bg-gray-50 p-4 border-2 border-black rounded mb-4">
                <div>
                   <span className="font-bold text-gray-500 block text-xs uppercase">Name</span>
                   <span className="font-bold text-lg">{userInfo.name}</span>
@@ -324,8 +399,8 @@ const App: React.FC = () => {
             </div>
 
             <div className="flex flex-col gap-3 no-print">
-              <Button fullWidth onClick={handlePrint}>
-                📄 리포트 인쇄 / PDF 저장
+              <Button fullWidth onClick={handleSavePDF} disabled={isSaving}>
+                {isSaving ? '📄 PDF 저장 중...' : '📄 PDF 저장하기'}
               </Button>
               <Button variant="secondary" fullWidth onClick={() => {
                 setStep(Step.INTRO);

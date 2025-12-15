@@ -23,7 +23,7 @@ export const analyzeFollowershipWithGemini = async (
     const formattedAnswersB = answersB.map((score, idx) => `${idx + 1}. ${QUESTIONS_B[idx].text}: ${score}점`).join('\n');
 
     const prompt = `당신은 조직 심리학과 리더십 전문가입니다. 켈리(Robert E. Kelley)의 팔로워십 이론을 기반으로 ${userInfo.name}님을 위한 퍼스널 브랜딩 리포트를 작성합니다.
-    
+
 **진단 대상자 정보:**
 - 이름: ${userInfo.name}
 - 회사: ${userInfo.company}
@@ -42,86 +42,78 @@ ${formattedAnswersA}
 ${formattedAnswersB}
 
 **작성 지침:**
-1.  가독성을 최우선으로 고려하세요.
-2.  HTML 태그에 Tailwind CSS 클래스를 직접 적용하여 시각적으로 아름다운 리포트를 만들어주세요.
-3.  중요한 키워드는 볼드체, 형광펜 효과, 색상 등을 사용하여 강조해주세요.
-4.  문단은 적절히 나누고, 줄바꿈을 통해 여백을 주세요.
+1. 가독성을 최우선으로 고려하세요.
+2. HTML 태그에 Tailwind CSS 클래스를 직접 적용하세요.
+3. 중요한 키워드는 볼드체, 색상 등을 사용하여 강조해주세요.
+4. **절대로 <table> 태그를 사용하지 마세요.** 모든 내용은 <p>, <ul>, <li> 태그만 사용하세요.
+5. 역량 개발 계획은 반드시 단순한 번호 리스트(<ol><li>)로 작성하세요. 복잡한 레이아웃 금지.
 
-**HTML 출력 형식 (반드시 이 구조와 클래스를 사용하여 스타일링된 HTML만 출력하세요):**
+**HTML 출력 형식 (반드시 이 구조를 따르세요):**
 
-<div class="space-y-8 text-gray-800">
+<div class="space-y-6 text-gray-800">
 
   <!-- 섹션 1: 유형 분석 -->
-  <div class="bg-white p-6 rounded-xl border-2 border-black shadow-sm">
-    <h3 class="text-xl font-black text-blue-700 flex items-center gap-2 mb-4">
-      <span class="text-2xl">🧐</span> 유형별 특징 분석
+  <div class="bg-white p-5 rounded-xl border-2 border-black">
+    <h3 class="text-lg font-black text-blue-700 flex items-center gap-2 mb-3">
+      <span>🧐</span> 유형별 특징 분석
     </h3>
-    <div class="space-y-4 leading-relaxed text-gray-700">
-      <p class="text-lg font-bold text-gray-900 border-l-4 border-blue-500 pl-3">
-        "${userInfo.name}님은 <span class="text-blue-600">${type.name}</span>의 전형적인 특징을 보이고 있습니다."
-      </p>
-      <p>
-        <!-- 특징 분석 내용 (문단 1) -->
-      </p>
-      <p>
-        <!-- 특징 분석 내용 (문단 2) -->
-      </p>
-    </div>
+    <p class="text-base font-bold text-gray-900 border-l-4 border-blue-500 pl-3 mb-3">
+      "${userInfo.name}님은 <span class="text-blue-600">${type.name}</span>의 전형적인 특징을 보이고 있습니다."
+    </p>
+    <p class="text-sm leading-relaxed text-gray-700 mb-2"><!-- 분석 내용 문단 1 --></p>
+    <p class="text-sm leading-relaxed text-gray-700"><!-- 분석 내용 문단 2 --></p>
   </div>
 
   <!-- 섹션 2: 강점 -->
-  <div class="bg-green-50 p-6 rounded-xl border-2 border-green-600 shadow-brutal-sm">
-    <h3 class="text-xl font-black text-green-800 flex items-center gap-2 mb-4">
-      <span class="text-2xl">💪</span> 당신의 핵심 강점
+  <div class="bg-green-50 p-5 rounded-xl border-2 border-green-600">
+    <h3 class="text-lg font-black text-green-800 flex items-center gap-2 mb-3">
+      <span>💪</span> 당신의 핵심 강점
     </h3>
-    <ul class="space-y-3">
+    <ul class="space-y-2 text-sm">
       <li class="flex items-start gap-2">
-        <span class="text-green-600 mt-1 font-bold">✔</span>
-        <span><strong class="text-green-900">키워드:</strong> 구체적인 설명...</span>
+        <span class="text-green-600 font-bold">✔</span>
+        <span><strong>키워드:</strong> 설명</span>
       </li>
-      <!-- 강점 리스트 5~7개 -->
+      <!-- 강점 5개 -->
     </ul>
   </div>
 
   <!-- 섹션 3: 개선 영역 -->
-  <div class="bg-red-50 p-6 rounded-xl border-2 border-red-400 shadow-brutal-sm">
-    <h3 class="text-xl font-black text-red-800 flex items-center gap-2 mb-4">
-      <span class="text-2xl">🔧</span> 개선이 필요한 영역
+  <div class="bg-red-50 p-5 rounded-xl border-2 border-red-400">
+    <h3 class="text-lg font-black text-red-800 flex items-center gap-2 mb-3">
+      <span>🔧</span> 개선이 필요한 영역
     </h3>
-    <ul class="space-y-3">
+    <ul class="space-y-2 text-sm">
       <li class="flex items-start gap-2">
-        <span class="text-red-500 mt-1 font-bold">⚠</span>
-        <span>구체적인 개선점 설명...</span>
+        <span class="text-red-500 font-bold">⚠</span>
+        <span>개선점 설명</span>
       </li>
-      <!-- 개선점 리스트 4~6개 -->
+      <!-- 개선점 4개 -->
     </ul>
   </div>
 
-  <!-- 섹션 4: 개발 계획 -->
-  <div class="bg-white p-6 rounded-xl border-2 border-black">
-    <h3 class="text-xl font-black text-purple-700 flex items-center gap-2 mb-4">
-      <span class="text-2xl">🚀</span> 역량 개발 & 실행 계획
+  <!-- 섹션 4: 역량 개발 계획 (단순 리스트만 사용!) -->
+  <div class="bg-white p-5 rounded-xl border-2 border-black">
+    <h3 class="text-lg font-black text-purple-700 flex items-center gap-2 mb-3">
+      <span>🚀</span> 역량 개발 계획
     </h3>
-    <div class="mb-6 bg-purple-50 p-4 rounded-lg">
-      <p class="font-bold text-purple-900 mb-2">💡 One Point Advice</p>
-      <p class="text-purple-800"><!-- 핵심 조언 --></p>
+    <div class="bg-purple-50 p-3 rounded-lg mb-4">
+      <p class="font-bold text-purple-900 text-sm">💡 One Point Advice</p>
+      <p class="text-purple-800 text-sm mt-1"><!-- 핵심 조언 한 문장 --></p>
     </div>
-    <ol class="list-decimal list-inside space-y-3 font-medium text-gray-700">
-      <li><span class="text-black">3개월 내:</span> <!-- 구체적 행동 --></li>
-      <li><span class="text-black">6개월 내:</span> <!-- 구체적 행동 --></li>
-      <li><span class="text-black">1년 내:</span> <!-- 구체적 행동 --></li>
-      <!-- 추가 계획 -->
-    </ol>
+    <ul class="space-y-3 text-sm">
+      <li><strong class="text-purple-700">3개월 내:</strong> <!-- 구체적 행동 한 문장 --></li>
+      <li><strong class="text-purple-700">6개월 내:</strong> <!-- 구체적 행동 한 문장 --></li>
+      <li><strong class="text-purple-700">1년 내:</strong> <!-- 구체적 행동 한 문장 --></li>
+    </ul>
   </div>
 
   <!-- 섹션 5: 종합 평가 -->
-  <div class="bg-yellow-50 p-6 rounded-xl border-2 border-yellow-400">
-    <h3 class="text-xl font-black text-yellow-800 flex items-center gap-2 mb-4">
-      <span class="text-2xl">🎓</span> 종합 평가
+  <div class="bg-yellow-50 p-5 rounded-xl border-2 border-yellow-400">
+    <h3 class="text-lg font-black text-yellow-800 flex items-center gap-2 mb-3">
+      <span>🎓</span> 종합 평가
     </h3>
-    <div class="leading-relaxed text-gray-800 space-y-3">
-      <!-- 종합 평가 내용 (따뜻하고 격려하는 톤) -->
-    </div>
+    <p class="text-sm leading-relaxed text-gray-800"><!-- 종합 평가 2-3문장 --></p>
   </div>
 
 </div>`;
