@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import html2pdf from 'html2pdf.js';
 import { ALL_QUESTIONS, FOLLOWERSHIP_TYPES } from './constants';
 import { UserInfo, FollowershipType, AnalysisResult } from './types';
 import { analyzeFollowershipWithGemini } from './services/geminiService';
+import { uploadPDFToStorage } from './services/pdfStorageService';
 import { QuestionCard } from './components/QuestionCard';
 import { Button } from './components/Button';
 import { ResultChart } from './components/ResultChart';
+import { AdminPage } from './components/AdminPage';
 
 enum Step {
   INTRO = 'INTRO',
@@ -23,13 +25,34 @@ const App: React.FC = () => {
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
+  const [isAdminMode, setIsAdminMode] = useState<boolean>(false);
 
   const topRef = useRef<HTMLDivElement>(null);
   const reportRef = useRef<HTMLDivElement>(null);
 
+  // URL 파라미터로 관리자 모드 확인
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('admin') === 'true') {
+      setIsAdminMode(true);
+    }
+  }, []);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // 관리자 모드면 관리자 페이지 렌더링
+  if (isAdminMode) {
+    return (
+      <AdminPage
+        onBack={() => {
+          setIsAdminMode(false);
+          window.history.pushState({}, '', window.location.pathname);
+        }}
+      />
+    );
+  }
 
   const handleUserInfoSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -111,7 +134,7 @@ const App: React.FC = () => {
   };
 
   const handleDownloadPDF = async () => {
-    if (!reportRef.current || isGeneratingPDF) return;
+    if (!reportRef.current || isGeneratingPDF || !result) return;
 
     setIsGeneratingPDF(true);
 
@@ -137,7 +160,27 @@ const App: React.FC = () => {
         pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
       };
 
-      await html2pdf().set(opt).from(element).save();
+      // PDF Blob 생성 및 다운로드
+      const pdfInstance = html2pdf().set(opt).from(element);
+
+      // PDF를 Blob으로 변환하여 Firebase에 업로드
+      const pdfBlob = await pdfInstance.outputPdf('blob');
+
+      // Firebase Storage에 업로드 (백그라운드)
+      uploadPDFToStorage(
+        pdfBlob,
+        userInfo.name,
+        userInfo.company,
+        result.type.name,
+        result.scoreA,
+        result.scoreB
+      ).catch(err => {
+        console.warn('Firebase 업로드 실패 (로컬 다운로드는 정상):', err);
+      });
+
+      // 로컬 다운로드
+      await pdfInstance.save();
+
     } catch (error) {
       console.error('PDF 생성 오류:', error);
       alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
