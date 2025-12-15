@@ -74,8 +74,8 @@ body {
 
   /* Page setup */
   @page {
-    size: A4;
-    margin: 15mm 10mm;
+    size: A4 portrait;
+    margin: 12mm 15mm;
   }
 
   /* Hide non-print elements */
@@ -85,11 +85,26 @@ body {
     display: none !important;
   }
 
-  /* Main container adjustments */
-  main {
+  /* Root container - full width */
+  .min-h-screen {
+    min-height: auto !important;
+    width: 100% !important;
     max-width: 100% !important;
     padding: 0 !important;
+  }
+
+  /* Main container adjustments - A4 full width */
+  main {
+    max-width: 100% !important;
+    width: 100% !important;
+    padding: 0 !important;
     margin: 0 !important;
+  }
+
+  /* Override max-w-md for print */
+  .max-w-md {
+    max-width: 100% !important;
+    width: 100% !important;
   }
 
   /* Typography adjustments for print */
@@ -209,17 +224,44 @@ body {
 
   /* Report content adjustments */
   .report-content {
-    font-size: 11pt !important;
-    line-height: 1.6 !important;
+    font-size: 10pt !important;
+    line-height: 1.5 !important;
+    width: 100% !important;
   }
 
   .report-content h3 {
-    font-size: 14pt !important;
-    margin-bottom: 0.75rem !important;
+    font-size: 13pt !important;
+    margin-bottom: 0.5rem !important;
   }
 
   .report-content p {
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.4rem !important;
+  }
+
+  /* Grid layout for print - force 3 columns for development plan */
+  .report-content .grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 0.75rem !important;
+  }
+
+  .report-content .grid > div {
+    padding: 0.75rem !important;
+  }
+
+  .report-content .grid p {
+    font-size: 9pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Sections spacing for print */
+  .report-content .space-y-8 > * + * {
+    margin-top: 1rem !important;
+  }
+
+  /* Card padding reduction for print */
+  .report-content .p-6 {
+    padding: 1rem !important;
   }
 
   /* Summary card */
@@ -267,6 +309,70 @@ body {
   /* Footer credit hide */
   .text-gray-400.mt-8 {
     display: none !important;
+  }
+
+  /* Force full width for print utilities */
+  .print\:max-w-full {
+    max-width: 100% !important;
+  }
+
+  .print\:w-full {
+    width: 100% !important;
+  }
+
+  .print\:px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .print\:py-0 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+
+  .print\:mx-0 {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  /* Result sections full width */
+  .space-y-8 {
+    width: 100% !important;
+  }
+
+  .space-y-8 > div {
+    width: 100% !important;
+  }
+
+  /* Ensure grid displays properly for development plan */
+  .grid-cols-1 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  .md\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+
+  /* Section borders and backgrounds */
+  .border-2 {
+    border-width: 1.5px !important;
+  }
+
+  .rounded-xl {
+    border-radius: 0.75rem !important;
+  }
+
+  /* Improved section spacing */
+  .mb-6 {
+    margin-bottom: 0.75rem !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 0.5rem !important;
+  }
+
+  .gap-4 {
+    gap: 0.5rem !important;
   }
 }
 
