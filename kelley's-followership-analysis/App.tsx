@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import html2pdf from 'html2pdf.js';
 import { ALL_QUESTIONS, FOLLOWERSHIP_TYPES } from './constants';
 import { UserInfo, FollowershipType, AnalysisResult } from './types';
 import { analyzeFollowershipWithGemini } from './services/geminiService';
@@ -21,8 +22,10 @@ const App: React.FC = () => {
   const [answers, setAnswers] = useState<number[]>(new Array(20).fill(0));
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [errorMsg, setErrorMsg] = useState<string>('');
-  
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
+
   const topRef = useRef<HTMLDivElement>(null);
+  const reportRef = useRef<HTMLDivElement>(null);
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -107,8 +110,40 @@ const App: React.FC = () => {
     }
   };
 
-  const handlePrint = () => {
-    window.print();
+  const handleDownloadPDF = async () => {
+    if (!reportRef.current || isGeneratingPDF) return;
+
+    setIsGeneratingPDF(true);
+
+    try {
+      const element = reportRef.current;
+      const fileName = `팔로워십_진단결과_${userInfo.name}_${new Date().toLocaleDateString('ko-KR').replace(/\. /g, '-').replace('.', '')}.pdf`;
+
+      const opt = {
+        margin: [10, 10, 10, 10],
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          letterRendering: true,
+          logging: false
+        },
+        jsPDF: {
+          unit: 'mm',
+          format: 'a4',
+          orientation: 'portrait'
+        },
+        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+      };
+
+      await html2pdf().set(opt).from(element).save();
+    } catch (error) {
+      console.error('PDF 생성 오류:', error);
+      alert('PDF 생성 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   // Progress calculation
@@ -260,9 +295,11 @@ const App: React.FC = () => {
 
         {step === Step.RESULT && result && (
           <div className="space-y-8 animate-fade-in-up print:space-y-6">
-            
-            {/* User Info Block for Print */}
-            <div className="hidden print:flex flex-row justify-between bg-gray-50 p-4 border-2 border-black rounded mb-4">
+
+            {/* PDF Content Area */}
+            <div ref={reportRef} className="space-y-6 bg-white p-4 rounded-xl">
+              {/* User Info Block */}
+              <div className="flex flex-row justify-between bg-gray-50 p-4 border-2 border-black rounded">
                <div>
                   <span className="font-bold text-gray-500 block text-xs uppercase">Name</span>
                   <span className="font-bold text-lg">{userInfo.name}</span>
@@ -310,22 +347,24 @@ const App: React.FC = () => {
                <ResultChart scoreA={result.scoreA} scoreB={result.scoreB} />
             </div>
 
-            {/* AI Report */}
-            <div className="bg-white border-2 border-black shadow-brutal p-6 sm:p-8 rounded-xl print:shadow-none print:border-none print:p-0">
-              <div className="flex items-center gap-2 mb-6 pb-4 border-b-2 border-black/10 print:hidden">
-                <span className="text-2xl">🤖</span>
-                <h3 className="text-xl font-bold !m-0 text-black">AI Analysis Report</h3>
+              {/* AI Report */}
+              <div className="bg-white border-2 border-black p-6 rounded-xl">
+                <div className="flex items-center gap-2 mb-6 pb-4 border-b-2 border-black/10">
+                  <span className="text-2xl">🤖</span>
+                  <h3 className="text-xl font-bold !m-0 text-black">AI Analysis Report</h3>
+                </div>
+
+                <div
+                  dangerouslySetInnerHTML={{ __html: result.reportHTML }}
+                  className="report-content"
+                />
               </div>
-              
-              <div 
-                dangerouslySetInnerHTML={{ __html: result.reportHTML }} 
-                className="report-content"
-              />
             </div>
+            {/* End of PDF Content Area */}
 
             <div className="flex flex-col gap-3 no-print">
-              <Button fullWidth onClick={handlePrint}>
-                📄 리포트 인쇄 / PDF 저장
+              <Button fullWidth onClick={handleDownloadPDF} disabled={isGeneratingPDF}>
+                {isGeneratingPDF ? '⏳ PDF 생성 중...' : '📥 PDF 다운로드'}
               </Button>
               <Button variant="secondary" fullWidth onClick={() => {
                 setStep(Step.INTRO);
@@ -335,7 +374,7 @@ const App: React.FC = () => {
                 🔄 처음으로 돌아가기
               </Button>
             </div>
-            
+
             <p className="text-center text-xs text-gray-400 mt-8 mb-12 no-print">
               @JJ Creative 교육연구소
             </p>
