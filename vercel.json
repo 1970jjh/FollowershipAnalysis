@@ -1,0 +1,9 @@
+{
+  "installCommand": "cd \"kelley's-followership-analysis\" && npm install",
+  "buildCommand": "cd \"kelley's-followership-analysis\" && npm run build",
+  "outputDirectory": "kelley's-followership-analysis/dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
