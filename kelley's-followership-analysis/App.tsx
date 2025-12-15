@@ -42,27 +42,30 @@ const App: React.FC = () => {
     setAnswers(newAnswers);
   };
 
-  // Logic: 
-  // Pragmatic: A 20-40, B 20-40
-  // Exemplary: A > 40, B > 40
-  // Alienated: A <= 40, B > 40
-  // Conformist: A > 40, B <= 40
-  // Passive: A <= 40, B <= 40 (excluding pragmatic box)
-  // * Note: The chart visualizes pragmatic as 20-40/20-40.
-  // The logic below follows the user's initial code request.
+  // Logic (based on center point 30):
+  // Pragmatic: A 20-40, B 20-40 (center zone)
+  // Exemplary: A > 30, B > 30 (excluding pragmatic)
+  // Alienated: A <= 30, B > 30
+  // Conformist: A > 30, B <= 30
+  // Passive: A <= 30, B <= 30
   const calculateType = (scoreA: number, scoreB: number): FollowershipType => {
+    // 실무형: 중앙 영역 (20-40, 20-40)
     if (scoreA >= 20 && scoreA <= 40 && scoreB >= 20 && scoreB <= 40) {
       return FOLLOWERSHIP_TYPES.PRAGMATIC;
     }
-    if (scoreA > 40 && scoreB > 40) {
+    // 주도형: 고참여 + 고비판적 사고 (A > 30, B > 30, 실무형 제외)
+    if (scoreA > 30 && scoreB > 30) {
       return FOLLOWERSHIP_TYPES.EXEMPLARY;
     }
-    if (scoreA <= 40 && scoreB > 40) {
+    // 소외형: 저참여 + 고비판적 사고 (A <= 30, B > 30)
+    if (scoreA <= 30 && scoreB > 30) {
       return FOLLOWERSHIP_TYPES.ALIENATED;
     }
-    if (scoreA > 40 && scoreB <= 40) {
+    // 순응형: 고참여 + 저비판적 사고 (A > 30, B <= 30)
+    if (scoreA > 30 && scoreB <= 30) {
       return FOLLOWERSHIP_TYPES.CONFORMIST;
     }
+    // 수동형: 저참여 + 저비판적 사고
     return FOLLOWERSHIP_TYPES.PASSIVE;
   };
 
