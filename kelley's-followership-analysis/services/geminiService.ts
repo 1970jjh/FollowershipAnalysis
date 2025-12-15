@@ -100,18 +100,26 @@ ${formattedAnswersB}
   <!-- 섹션 4: 개발 계획 -->
   <div class="bg-white p-6 rounded-xl border-2 border-black">
     <h3 class="text-xl font-black text-purple-700 flex items-center gap-2 mb-4">
-      <span class="text-2xl">🚀</span> 역량 개발 & 실행 계획
+      <span class="text-2xl">🚀</span> 역량 개발 계획
     </h3>
-    <div class="mb-6 bg-purple-50 p-4 rounded-lg">
+    <div class="mb-6 bg-purple-50 p-4 rounded-lg border border-purple-200">
       <p class="font-bold text-purple-900 mb-2">💡 One Point Advice</p>
-      <p class="text-purple-800"><!-- 핵심 조언 --></p>
+      <p class="text-purple-800 leading-relaxed"><!-- 핵심 조언: 2-3문장으로 작성 --></p>
     </div>
-    <ol class="list-decimal list-inside space-y-3 font-medium text-gray-700">
-      <li><span class="text-black">3개월 내:</span> <!-- 구체적 행동 --></li>
-      <li><span class="text-black">6개월 내:</span> <!-- 구체적 행동 --></li>
-      <li><span class="text-black">1년 내:</span> <!-- 구체적 행동 --></li>
-      <!-- 추가 계획 -->
-    </ol>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-400">
+        <p class="font-black text-purple-700 mb-2">3개월 내</p>
+        <p class="text-gray-700 text-sm leading-relaxed"><!-- 구체적인 실행 계획을 2-3문장으로 작성. 목표, 행동, 기대효과 포함 --></p>
+      </div>
+      <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-500">
+        <p class="font-black text-purple-700 mb-2">6개월 내</p>
+        <p class="text-gray-700 text-sm leading-relaxed"><!-- 구체적인 실행 계획을 2-3문장으로 작성. 목표, 행동, 기대효과 포함 --></p>
+      </div>
+      <div class="bg-purple-50 p-4 rounded-lg border-l-4 border-purple-600">
+        <p class="font-black text-purple-700 mb-2">1년 내</p>
+        <p class="text-gray-700 text-sm leading-relaxed"><!-- 구체적인 실행 계획을 2-3문장으로 작성. 목표, 행동, 기대효과 포함 --></p>
+      </div>
+    </div>
   </div>
 
   <!-- 섹션 5: 종합 평가 -->

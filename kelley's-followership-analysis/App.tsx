@@ -137,7 +137,7 @@ const App: React.FC = () => {
         <p className="text-sm text-gray-500 mt-2">Personalized Analysis powered by AI</p>
       </div>
 
-      <main className="max-w-md mx-auto px-4 py-8 print:max-w-none print:px-0">
+      <main className="max-w-md mx-auto px-4 py-8 print:max-w-full print:w-full print:px-0 print:py-0 print:mx-0">
         {step === Step.INTRO && (
           <div className="flex flex-col gap-6 animate-fade-in-up no-print">
             <div className="bg-white border-2 border-black shadow-brutal p-6 rounded-xl">
