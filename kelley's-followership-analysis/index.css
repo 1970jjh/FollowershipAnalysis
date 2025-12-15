@@ -1,0 +1,279 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base Styles */
+body {
+  background-color: #f0f0f0;
+  background-image: radial-gradient(#000 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Animation */
+.animate-fade-in-up {
+  animation: fadeInUp 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Report content styling */
+.report-content {
+  @apply text-gray-800 leading-relaxed;
+}
+
+.report-content h3 {
+  @apply text-xl font-bold mb-4;
+}
+
+.report-content p {
+  @apply mb-3;
+}
+
+.report-content ul {
+  @apply space-y-2 mb-4;
+}
+
+.report-content li {
+  @apply flex items-start gap-2;
+}
+
+.report-content strong {
+  @apply font-bold;
+}
+
+/* ========================================
+   PRINT STYLES - PDF Export Optimization
+   ======================================== */
+@media print {
+  /* Reset background for print */
+  body {
+    background: white !important;
+    background-image: none !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: A4;
+    margin: 15mm 10mm;
+  }
+
+  /* Hide non-print elements */
+  .no-print,
+  header.no-print,
+  .sticky {
+    display: none !important;
+  }
+
+  /* Main container adjustments */
+  main {
+    max-width: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Typography adjustments for print */
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid !important;
+    break-after: avoid !important;
+  }
+
+  p, li, div {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Card styling for print */
+  .bg-white,
+  .bg-green-50,
+  .bg-red-50,
+  .bg-yellow-50,
+  .bg-purple-50,
+  .bg-blue-100,
+  .bg-gray-100 {
+    background-color: white !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Keep colored borders and backgrounds visible */
+  .border-green-600,
+  .border-red-400,
+  .border-yellow-400,
+  .border-blue-500,
+  .border-black {
+    border-color: inherit !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Section backgrounds with colors - force print */
+  .bg-green-50 { background-color: #f0fdf4 !important; }
+  .bg-red-50 { background-color: #fef2f2 !important; }
+  .bg-yellow-50 { background-color: #fefce8 !important; }
+  .bg-purple-50 { background-color: #faf5ff !important; }
+  .bg-blue-100 { background-color: #dbeafe !important; }
+
+  /* Shadow removal for print */
+  .shadow-brutal,
+  .shadow-brutal-lg,
+  .shadow-brutal-sm,
+  .shadow-sm {
+    box-shadow: none !important;
+  }
+
+  /* Border adjustments */
+  .border-2 {
+    border-width: 1px !important;
+  }
+
+  .border-4 {
+    border-width: 2px !important;
+  }
+
+  /* Page break controls */
+  .print\:break-inside-avoid,
+  .bg-white.border-2,
+  .bg-green-50,
+  .bg-red-50,
+  .bg-yellow-50 {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Force page break before major sections if needed */
+  .print\:break-before-page {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  /* Chart container */
+  .aspect-square {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    max-height: 400px !important;
+  }
+
+  /* Recharts SVG visibility */
+  svg {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .recharts-wrapper {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Result section spacing */
+  .space-y-8 > * + * {
+    margin-top: 1.5rem !important;
+  }
+
+  /* Text color preservation */
+  .text-brutal-blue,
+  .text-blue-600,
+  .text-blue-700,
+  .text-green-600,
+  .text-green-800,
+  .text-green-900,
+  .text-red-500,
+  .text-red-800,
+  .text-yellow-800,
+  .text-purple-700,
+  .text-purple-800,
+  .text-purple-900 {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Report content adjustments */
+  .report-content {
+    font-size: 11pt !important;
+    line-height: 1.6 !important;
+  }
+
+  .report-content h3 {
+    font-size: 14pt !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .report-content p {
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Summary card */
+  .text-4xl {
+    font-size: 28pt !important;
+  }
+
+  .text-3xl {
+    font-size: 22pt !important;
+  }
+
+  .text-2xl {
+    font-size: 18pt !important;
+  }
+
+  .text-xl {
+    font-size: 14pt !important;
+  }
+
+  /* Print header visibility */
+  .print\:block {
+    display: block !important;
+  }
+
+  .print\:flex {
+    display: flex !important;
+  }
+
+  .print\:hidden {
+    display: none !important;
+  }
+
+  /* User info block for print */
+  .hidden.print\:flex {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+  }
+
+  /* Ensure links don't show URL */
+  a[href]:after {
+    content: none !important;
+  }
+
+  /* Footer credit hide */
+  .text-gray-400.mt-8 {
+    display: none !important;
+  }
+}
+
+/* Print preview improvements - shown on screen when printing */
+@media screen {
+  /* Animate elements when visible */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+}

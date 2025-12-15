@@ -114,8 +114,8 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen pb-10 font-sans text-gray-900 bg-[#f0f0f0] print:bg-white" ref={topRef}>
-      {/* Header - Glassmorphism */}
-      <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b-4 border-black px-4 py-3 flex justify-between items-center shadow-sm no-print">
+      {/* Header - Glassmorphism (hidden in print) */}
+      <header className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b-4 border-black px-4 py-3 flex justify-between items-center shadow-sm no-print print:hidden">
         <h1 className="text-xl font-display font-black tracking-tight text-brutal-blue">
           KELLEY'S<span className="text-black">FOLLOWERSHIP</span>
         </h1>
@@ -152,7 +152,7 @@ const App: React.FC = () => {
             </div>
             
             <Button fullWidth onClick={() => setStep(Step.USER_INFO)}>
-              진단 시작하기 ->
+              진단 시작하기 →
             </Button>
           </div>
         )}
@@ -189,7 +189,7 @@ const App: React.FC = () => {
             </div>
 
             <Button type="submit" fullWidth>
-              다음 단계 ->
+              다음 단계 →
             </Button>
             <button 
               type="button" 
