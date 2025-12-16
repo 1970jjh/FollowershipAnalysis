@@ -70,30 +70,30 @@ ${formattedAnswersB}
   </div>
 
   <!-- 섹션 2: 강점 -->
-  <div class="bg-green-50 p-6 rounded-xl border-2 border-green-600 shadow-brutal-sm">
+  <div class="bg-green-50 p-6 rounded-xl border-2 border-green-600">
     <h3 class="text-xl font-black text-green-800 flex items-center gap-2 mb-4">
       <span class="text-2xl">💪</span> 당신의 핵심 강점
     </h3>
     <ul class="space-y-3">
       <li class="flex items-start gap-2">
-        <span class="text-green-600 mt-1 font-bold">✔</span>
-        <span><strong class="text-green-900">키워드:</strong> 구체적인 설명...</span>
+        <span class="flex-shrink-0 text-green-600 font-bold">✔</span>
+        <span class="flex-1"><strong class="text-green-900">키워드:</strong> 구체적인 설명...</span>
       </li>
-      <!-- 강점 리스트 5~7개 -->
+      <!-- 강점 리스트 5~7개. 반드시 위 형식처럼 flex-shrink-0과 flex-1 클래스를 사용하세요. -->
     </ul>
   </div>
 
   <!-- 섹션 3: 개선 영역 -->
-  <div class="bg-red-50 p-6 rounded-xl border-2 border-red-400 shadow-brutal-sm">
+  <div class="bg-red-50 p-6 rounded-xl border-2 border-red-400">
     <h3 class="text-xl font-black text-red-800 flex items-center gap-2 mb-4">
       <span class="text-2xl">🔧</span> 개선이 필요한 영역
     </h3>
     <ul class="space-y-3">
       <li class="flex items-start gap-2">
-        <span class="text-red-500 mt-1 font-bold">⚠</span>
-        <span>구체적인 개선점 설명...</span>
+        <span class="flex-shrink-0 text-red-500 font-bold">⚠</span>
+        <span class="flex-1">구체적인 개선점 설명...</span>
       </li>
-      <!-- 개선점 리스트 4~6개 -->
+      <!-- 개선점 리스트 4~6개. 반드시 위 형식처럼 flex-shrink-0과 flex-1 클래스를 사용하세요. -->
     </ul>
   </div>
 
