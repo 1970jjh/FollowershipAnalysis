@@ -59,6 +59,35 @@ body {
   @apply font-bold;
 }
 
+/* 형광펜 효과 - 텍스트가 가려지지 않도록 수정 */
+.report-content .bg-yellow-200,
+.report-content .bg-yellow-100,
+.report-content .bg-yellow-300,
+.report-content [class*="bg-yellow"] {
+  background-color: transparent !important;
+  border-bottom: 3px solid #fef08a;
+  padding-bottom: 1px;
+}
+
+.report-content mark {
+  background-color: transparent !important;
+  border-bottom: 3px solid #fef08a;
+  padding-bottom: 1px;
+}
+
+/* 리스트 아이템 줄바꿈 처리 */
+.report-content li {
+  @apply flex items-start gap-2;
+  flex-wrap: wrap;
+}
+
+.report-content li span {
+  flex: 1;
+  min-width: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}
+
 /* ========================================
    PRINT STYLES - PDF Export Optimization
    ======================================== */

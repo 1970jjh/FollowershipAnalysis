@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, ReferenceArea, ResponsiveContainer, ReferenceLine, Label } from 'recharts';
+import React from 'react';
+import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, ReferenceArea, ReferenceLine, Label } from 'recharts';
 
 interface ResultChartProps {
   scoreA: number; // 0-50
@@ -8,20 +8,6 @@ interface ResultChartProps {
 
 export const ResultChart: React.FC<ResultChartProps> = ({ scoreA, scoreB }) => {
   const data = [{ x: scoreA, y: scoreB }];
-  const [isPrinting, setIsPrinting] = useState(false);
-
-  useEffect(() => {
-    const handleBeforePrint = () => setIsPrinting(true);
-    const handleAfterPrint = () => setIsPrinting(false);
-
-    window.addEventListener('beforeprint', handleBeforePrint);
-    window.addEventListener('afterprint', handleAfterPrint);
-
-    return () => {
-      window.removeEventListener('beforeprint', handleBeforePrint);
-      window.removeEventListener('afterprint', handleAfterPrint);
-    };
-  }, []);
 
   // Custom Tick for axes
   const renderCustomAxisTick = ({ x, y, payload, orientation }: any) => {
@@ -33,7 +19,7 @@ export const ResultChart: React.FC<ResultChartProps> = ({ scoreA, scoreB }) => {
           dy={0}
           textAnchor="middle"
           fill="#666"
-          fontSize={isPrinting ? 10 : 11}
+          fontSize={10}
           fontWeight="bold"
         >
           {payload.value}
@@ -42,11 +28,12 @@ export const ResultChart: React.FC<ResultChartProps> = ({ scoreA, scoreB }) => {
     );
   };
 
+  // 고정 크기 차트 (PDF 캡처 호환)
   const chartContent = (
     <ScatterChart
-      width={isPrinting ? 400 : undefined}
-      height={isPrinting ? 400 : undefined}
-      margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
+      width={320}
+      height={320}
+      margin={{ top: 15, right: 15, bottom: 15, left: 15 }}
     >
       <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
 
@@ -77,89 +64,73 @@ export const ResultChart: React.FC<ResultChartProps> = ({ scoreA, scoreB }) => {
       <ReferenceLine y={30} stroke="#333" strokeWidth={2} />
 
       {/* Quadrant Labels */}
-      {/* Top Left: Alienated (Pos: y=45) */}
+      {/* Top Left: Alienated */}
       <ReferenceArea x1={10} x2={30} y1={40} y2={50} fill="transparent" stroke="none">
-         <Label value="소외형 팔로워" position="center" fill="#4b5563" fontSize={isPrinting ? 12 : 16} fontWeight={900} />
+         <Label value="소외형 팔로워" position="center" fill="#4b5563" fontSize={11} fontWeight={900} />
       </ReferenceArea>
 
-      {/* Top Right: Exemplary/Judohyeong (Pos: y=45) */}
+      {/* Top Right: Exemplary */}
       <ReferenceArea x1={30} x2={50} y1={40} y2={50} fill="transparent" stroke="none">
-         <Label value="주도형 팔로워" position="center" fill="#2563eb" fontSize={isPrinting ? 12 : 16} fontWeight={900} />
+         <Label value="주도형 팔로워" position="center" fill="#2563eb" fontSize={11} fontWeight={900} />
       </ReferenceArea>
 
-      {/* Bottom Left: Passive (Pos: y=15) */}
+      {/* Bottom Left: Passive */}
       <ReferenceArea x1={10} x2={30} y1={10} y2={20} fill="transparent" stroke="none">
-         <Label value="수동형 팔로워" position="center" fill="#dc2626" fontSize={isPrinting ? 12 : 16} fontWeight={900} />
+         <Label value="수동형 팔로워" position="center" fill="#dc2626" fontSize={11} fontWeight={900} />
       </ReferenceArea>
 
-      {/* Bottom Right: Conformist (Pos: y=15) */}
+      {/* Bottom Right: Conformist */}
       <ReferenceArea x1={30} x2={50} y1={10} y2={20} fill="transparent" stroke="none">
-         <Label value="순응형 팔로워" position="center" fill="#ca8a04" fontSize={isPrinting ? 12 : 16} fontWeight={900} />
+         <Label value="순응형 팔로워" position="center" fill="#ca8a04" fontSize={11} fontWeight={900} />
       </ReferenceArea>
 
       {/* Center Box: Pragmatic (20-40) */}
       <ReferenceArea x1={20} x2={40} y1={20} y2={40} fill="white" fillOpacity={0.7} stroke="#059669" strokeWidth={3} strokeDasharray="5 5" />
 
-      {/* Pragmatic Label inside the box (Pos: Center 30,30) */}
+      {/* Pragmatic Label */}
       <ReferenceArea x1={20} x2={40} y1={20} y2={40} fill="transparent" stroke="none">
-         <Label value="실무형 팔로워" position="center" fill="#059669" fontSize={isPrinting ? 14 : 18} fontWeight={900} />
+         <Label value="실무형 팔로워" position="center" fill="#059669" fontSize={12} fontWeight={900} />
       </ReferenceArea>
 
-      <Scatter name="My Score" data={data} fill="#ff0000">
-         {/* Custom Dot */}
-         <symbol id="myDot" viewBox="0 0 100 100" width="20" height="20">
-            <circle cx="50" cy="50" r="40" fill="red" stroke="white" strokeWidth="5" className="animate-pulse" />
-         </symbol>
-      </Scatter>
+      <Scatter name="My Score" data={data} fill="#ff0000" />
     </ScatterChart>
   );
 
   return (
-    <div className="w-full flex flex-col items-center my-8 print:my-4 print:break-inside-avoid" id="followership-chart">
-      <div className="relative w-full aspect-square max-w-[600px] bg-white border-4 border-gray-600 p-2 sm:p-6 shadow-brutal print:shadow-none print:border-2 print:max-w-[450px]">
+    <div className="w-full flex flex-col items-center my-4" id="followership-chart">
+      <div className="relative bg-white border-2 border-gray-600 p-4" style={{ width: '380px', height: '380px' }}>
 
         {/* Top Label */}
-        <div className="absolute -top-10 left-1/2 -translate-x-1/2 font-black text-black flex flex-col items-center z-10 w-full text-center print:-top-8">
-          <span className="text-sm sm:text-lg bg-white px-2 print:text-sm">독립/비판적 사고 (B)</span>
-          <span className="text-xs">▲</span>
+        <div className="absolute -top-8 left-1/2 -translate-x-1/2 font-bold text-black text-center text-sm">
+          <span>독립/비판적 사고 (B)</span>
+          <span className="block text-xs">▲</span>
         </div>
 
         {/* Bottom Label */}
-        <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 font-black text-black flex flex-col items-center z-10 w-full text-center print:-bottom-8">
-          <span className="text-xs">▼</span>
-          <span className="text-sm sm:text-lg bg-white px-2 print:text-sm">의존/무비판적 사고 (B)</span>
+        <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 font-bold text-black text-center text-sm">
+          <span className="block text-xs">▼</span>
+          <span>의존/무비판적 사고 (B)</span>
         </div>
 
         {/* Left Label */}
-        <div className="absolute top-1/2 -left-12 -translate-y-1/2 font-black text-black flex items-center -rotate-90 origin-center whitespace-nowrap z-10 print:-left-10">
-           <span className="text-sm sm:text-lg bg-white px-2 print:text-sm">수동적 참여 (A)</span>
+        <div className="absolute top-1/2 -left-16 -translate-y-1/2 font-bold text-black -rotate-90 whitespace-nowrap text-sm">
+           수동적 참여 (A)
         </div>
 
         {/* Right Label */}
-         <div className="absolute top-1/2 -right-12 -translate-y-1/2 font-black text-black flex items-center rotate-90 origin-center whitespace-nowrap z-10 print:-right-10">
-           <span className="text-sm sm:text-lg bg-white px-2 print:text-sm">능동적 참여 (A)</span>
+        <div className="absolute top-1/2 -right-16 -translate-y-1/2 font-bold text-black rotate-90 whitespace-nowrap text-sm">
+           능동적 참여 (A)
         </div>
 
-        {isPrinting ? (
-          <div className="w-full h-full flex items-center justify-center">
-            {chartContent}
-          </div>
-        ) : (
-          <ResponsiveContainer width="100%" height="100%">
-            {chartContent}
-          </ResponsiveContainer>
-        )}
+        {/* Chart */}
+        <div className="w-full h-full flex items-center justify-center">
+          {chartContent}
+        </div>
 
-        {/* User Point Indicator styling */}
-        <div className="absolute top-2 right-2 flex items-center gap-2 bg-white px-2 py-1 border border-gray-300 rounded shadow-sm text-xs print:hidden">
-          <div className="w-3 h-3 rounded-full bg-red-600 border border-white"></div>
+        {/* Legend */}
+        <div className="absolute top-2 right-2 flex items-center gap-1 bg-white px-2 py-1 border border-gray-300 rounded text-xs">
+          <div className="w-2 h-2 rounded-full bg-red-600"></div>
           <span>내 위치</span>
-        </div>
-
-        {/* Print Legend */}
-        <div className="hidden print:flex absolute bottom-2 right-2 items-center gap-2 text-xs">
-          <div className="w-3 h-3 rounded-full bg-red-600"></div>
-          <span>현재 위치 (A:{scoreA}, B:{scoreB})</span>
         </div>
       </div>
     </div>
